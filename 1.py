@@ -42,7 +42,7 @@ def example_function(a, b, c=0):
 result = example_function(1, "2", c=3.0)
 print(result)
 
-import functools
+import functools.
 
 
 def colorize(color_code):
