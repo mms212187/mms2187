@@ -50,6 +50,7 @@
         {{ form.as_p }}
         <button type="submit">Войти</button>
     </form>
+<a href="{% url 'social:begin' 'github' %}">Login with GitHub</a>
 
     <p>Забыли пароль? <a href="{% url 'password_reset' %}">Сбросить пароль</a></p>
 </body>
