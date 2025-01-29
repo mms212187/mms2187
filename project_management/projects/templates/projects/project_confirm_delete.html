@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Подтвердить удаление{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h1 class="h4 mb-0">Подтвердите удаление проекта</h1>
+        </div>
+        <div class="card-body">
+            <p>Вы уверены, что хотите удалить проект <strong>{{ project.name }}</strong>?</p>
+            <p>Это действие нельзя будет отменить.</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger me-2">Удалить</button>
+                <a href="{% url 'project_detail' project.pk %}" class="btn btn-secondary">Отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

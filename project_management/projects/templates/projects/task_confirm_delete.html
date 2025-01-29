@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Подтверждение удаления{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h1 class="h4 mb-0">Подтвердите удаление задачи</h1>
+        </div>
+        <div class="card-body">
+            <p>Вы уверены, что хотите удалить задачу <strong>{{ task.name }}</strong>?</p>
+            <p>Это действие нельзя будет отменить.</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger me-2">Удалить</button>
+                <a href="{% url 'task_detail' task.pk %}" class="btn btn-secondary">Отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

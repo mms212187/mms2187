@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Список задач{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h1 class="h4 mb-0">Список задач</h1>
+            {% if request.user.is_authenticated %}
+                {% if request.user.role == 'admin' or request.user.role == 'manager' %}
+                    <a href="{% url 'task_create' %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-plus-circle"></i> Добавить задачу
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <!-- Форма фильтрации и сортировки -->
+            <form method="get" class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <input type="text" name="q" class="form-control" placeholder="Поиск по названию или описанию" value="{{ request.GET.q }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="priority" class="form-select">
+                        <option value="">Все приоритеты</option>
+                        <option value="high" {% if request.GET.priority == "high" %}selected{% endif %}>Высокий</option>
+                        <option value="medium" {% if request.GET.priority == "medium" %}selected{% endif %}>Средний</option>
+                        <option value="low" {% if request.GET.priority == "low" %}selected{% endif %}>Низкий</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="sort_by" class="form-select">
+                        <option value="">Без сортировки</option>
+                        <option value="name" {% if request.GET.sort_by == "name" %}selected{% endif %}>По названию</option>
+                        <option value="-start_date" {% if request.GET.sort_by == "-start_date" %}selected{% endif %}>По дате начала (убывание)</option>
+                        <option value="start_date" {% if request.GET.sort_by == "start_date" %}selected{% endif %}>По дате начала (возрастание)</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success w-100">Применить</button>
+                </div>
+            </form>
+
+            <!-- Список задач -->
+            <ul class="list-group">
+                {% for task in tasks %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{% url 'task_detail' task.pk %}" class="fw-bold text-dark text-decoration-none">
+                                {{ task.name }}
+                            </a>
+                            <span class="badge
+                                {% if task.priority == 'high' %}bg-danger
+                                {% elif task.priority == 'medium' %}bg-warning
+                                {% else %}bg-success
+                                {% endif %} text-dark">
+                                {{ task.priority }}
+                            </span>
+                            <span class="badge bg-secondary text-light">{{ task.status }}</span>
+                        </div>
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.role %}
+                                {% if request.user.role == 'admin' or request.user.role == 'manager' %}
+                                    <div>
+                                        <a href="{% url 'task_edit' task.pk %}" class="btn btn-outline-secondary btn-sm me-2">
+                                            <i class="bi bi-pencil"></i> Редактировать
+                                        </a>
+                                        <a href="{% url 'task_delete' task.pk %}"
+                                           class="btn btn-outline-danger btn-sm"
+                                           onclick="return confirm('Вы уверены, что хотите удалить задачу?');">
+                                            <i class="bi bi-trash"></i> Удалить
+                                        </a>
+                                    </div>
+                                {% elif request.user.role == 'executor' and task.executor == request.user %}
+                                    <div>
+                                        <a href="{% url 'task_update_status' task.pk %}" class="btn btn-warning btn-sm">Обновить статус</a>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-center text-muted">Задачи отсутствуют.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
