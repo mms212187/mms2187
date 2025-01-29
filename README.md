@@ -27,7 +27,7 @@
 
 2. Перейдите в каталог проекта:
     ```bash
-    cd projectname
+    cd project_management
     ```
 
 3. Создайте виртуальное окружение:
